@@ -17,12 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin  
 @RestController //this signifies that your controller will be sending and receiving info through JSON data
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 
 public class UserController {
-	
+		
 	@Autowired
 	private UserRepository userRepo;
+	
+
+	@GetMapping("username/{password}")
+	public ResponseEntity<User> findByUsernameAndPassword(@PathVariable String username, @PathVariable String password) {
+		var user = userRepo.findByUsernameAndPassword(username, password);
+		if(user.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+			return new ResponseEntity<User>(user.get(), HttpStatus.OK);
+	}
+
 	
 	@GetMapping
 	public ResponseEntity<Iterable<User>> getUsers(){

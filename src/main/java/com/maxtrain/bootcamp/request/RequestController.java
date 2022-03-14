@@ -40,7 +40,7 @@ public class RequestController {
 	}
 	
 	//adding this method to get all requests in REVIRW status
-	@GetMapping("reviews")
+	@GetMapping("review")
 	public ResponseEntity<Iterable<Request>> getRequetsInReview(){
 		var requests = reqRepo.findByStatus("REVIEW");
 		return new ResponseEntity<Iterable<Request>>(requests, HttpStatus.OK);

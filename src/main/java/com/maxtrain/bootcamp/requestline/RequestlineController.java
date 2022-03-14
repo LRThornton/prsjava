@@ -13,17 +13,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.maxtrain.bootcamp.request.Request;
+import com.maxtrain.bootcamp.request.RequestRepository;
+
 
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api/request")
+@RequestMapping("/api/requestlines")
 
 public class RequestlineController {
 	
 	
 	@Autowired
 	private RequestlineRepository RLRepo;
+	
+	@Autowired
+	private RequestRepository reqRepo;
+	
+	
+	@SuppressWarnings("rawtypes")	
+	private ResponseEntity recalcRequestTotal(int requestId) {
+		var reqOpt = reqRepo.findById(requestId);
+		if(reqOpt.isEmpty()) {
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		var request = reqOpt.get();
+		var requestTotal = 0;
+		for(var requestline : request.getRequestlines()) {
+		requestTotal += requestline.getProduct().getPrice()
+				* requestline.getQuantity();	
+		}
+		request.setTotal(requestTotal);
+		reqRepo.save(request);
+
+		return new ResponseEntity<>(HttpStatus.OK);
+		}
+		
 	
 	@GetMapping
 	public ResponseEntity<Iterable<Requestline>> getRequestline(){
@@ -45,9 +72,12 @@ public class RequestlineController {
 		if(requestline == null || requestline.getId() !=0) {
 			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);				
 		}
-		var reql = RLRepo.save(requestline);		
-		return new ResponseEntity<Requestline>(reql,HttpStatus.CREATED);	
+		var reql = RLRepo.save(requestline);	
+		var recalc = this.recalcRequestTotal(requestline.getRequest().getId());
+		return new ResponseEntity<Requestline>(reql, HttpStatus.CREATED);	
 	}
+	
+	
 	
 	@SuppressWarnings("rawtypes") //this means we can use an instance of a class that is generic but we will not put a generic type in there
 	@PutMapping("{id}") 
@@ -60,17 +90,20 @@ public class RequestlineController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		RLRepo.save(requestline);
+		var recalc = this.recalcRequestTotal(requestline.getRequest().getId());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	@SuppressWarnings("rawtypes")
 	@DeleteMapping("{id}")
-	public ResponseEntity deleterequestline(@PathVariable int id) {
+	public ResponseEntity deleteRequestline(@PathVariable int id) {
 		var requestline = RLRepo.findById(id);
 		if(requestline.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-	RLRepo.delete(requestline.get());
+		RLRepo.delete(requestline.get());
+		var recalc = this.recalcRequestTotal(requestline.getRequest().getId());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
 	
 }

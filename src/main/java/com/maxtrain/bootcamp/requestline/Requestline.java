@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.maxtrain.bootcamp.product.Product;
 import com.maxtrain.bootcamp.request.Request;
 
@@ -20,13 +21,17 @@ public class Requestline {
 
 	private int quantity;
 	
+	@JsonBackReference
 	@ManyToOne(optional=false)
-	@JoinColumn(name="requestId", columnDefinition="int")
+	@JoinColumn(name="requestId")
 	private Request request;
 	
+	//@JsonBackReference
 	@ManyToOne(optional=false)
-	@JoinColumn(name="productId", columnDefinition="int")
+	@JoinColumn(name="productId")
 	private Product product;
+
+	public Requestline() {}
 
 	public int getId() {
 		return id;

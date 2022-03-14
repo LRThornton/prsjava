@@ -7,8 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.maxtrain.bootcamp.requestline.Requestline;
 import com.maxtrain.bootcamp.user.User;
+
+import java.util.List;
 
 @Entity
 
@@ -32,8 +37,30 @@ public class Request {
 	private double total;
 	
 	@ManyToOne(optional=false)
-	@JoinColumn(name="userId", columnDefinition="int")
+	@JoinColumn(name="userId")
 	private User user;
+	
+	//added new stuff here-this creates a collection of requestline
+	@JsonManagedReference
+	@OneToMany(mappedBy="request")
+	private List<Requestline> requestlines;
+	
+		
+	public Request() {}
+	
+	
+	
+	public List<Requestline> getRequestlines() {
+		return requestlines;
+	}
+
+
+
+	public void setRequestlines(List<Requestline> requestlines) {
+		this.requestlines = requestlines;
+	}
+
+
 
 	public int getId() {
 		return id;

@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.maxtrain.bootcamp.vendor.Vendor;
 
 @Entity
@@ -31,8 +32,9 @@ public class Product {
 	@Column(length=255, nullable=true)
 	private String photoPath;	
 	
+	@JsonBackReference
 	@ManyToOne(optional=false)
-	@JoinColumn(name="vendorId", columnDefinition="int")
+	@JoinColumn(name="vendorId")
 	private Vendor vendor;
 	
 	public Product () {}
