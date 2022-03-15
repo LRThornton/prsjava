@@ -48,18 +48,15 @@ public class Request {
 		
 	public Request() {}
 	
-	
-	
+		
 	public List<Requestline> getRequestlines() {
 		return requestlines;
 	}
 
 
-
 	public void setRequestlines(List<Requestline> requestlines) {
 		this.requestlines = requestlines;
 	}
-
 
 
 	public int getId() {

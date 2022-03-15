@@ -23,12 +23,12 @@ public class Requestline {
 	
 	@JsonBackReference
 	@ManyToOne(optional=false)
-	@JoinColumn(name="requestId")
+	@JoinColumn(name="requestId", columnDefinition="int")
 	private Request request;
 	
 	//@JsonBackReference
 	@ManyToOne(optional=false)
-	@JoinColumn(name="productId")
+	@JoinColumn(name="productId", columnDefinition="int" )
 	private Product product;
 
 	public Requestline() {}

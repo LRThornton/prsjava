@@ -40,7 +40,7 @@ public class RequestlineController {
 		}
 		
 		var request = reqOpt.get();
-		var requestTotal = 0;
+		var requestTotal = 0.0;
 		for(var requestline : request.getRequestlines()) {
 		requestTotal += requestline.getProduct().getPrice()
 				* requestline.getQuantity();	
@@ -73,7 +73,7 @@ public class RequestlineController {
 			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);				
 		}
 		var reql = RLRepo.save(requestline);	
-		var recalc = this.recalcRequestTotal(requestline.getRequest().getId());
+		recalcRequestTotal(requestline.getRequest().getId());
 		return new ResponseEntity<Requestline>(reql, HttpStatus.CREATED);	
 	}
 	
@@ -90,20 +90,22 @@ public class RequestlineController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		RLRepo.save(requestline);
-		var recalc = this.recalcRequestTotal(requestline.getRequest().getId());
+		recalcRequestTotal(requestline.getRequest().getId());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+
 	@SuppressWarnings("rawtypes")
 	@DeleteMapping("{id}")
-	public ResponseEntity deleteRequestline(@PathVariable int id) {
-		var requestline = RLRepo.findById(id);
-		if(requestline.isEmpty()) {
+	public ResponseEntity deleteRequestline(@PathVariable int id, @RequestBody Requestline requestline) {
+		var rql = RLRepo.findById(id);
+		if(rql.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		RLRepo.delete(requestline.get());
-		var recalc = this.recalcRequestTotal(requestline.getRequest().getId());
+		RLRepo.delete(rql.get());
+		recalcRequestTotal(requestline.getRequest().getId());		
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
 	
 	
 }

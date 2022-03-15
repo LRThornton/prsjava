@@ -25,7 +25,7 @@ public class UserController {
 	private UserRepository userRepo;
 	
 
-	@GetMapping("username/{password}")
+	@GetMapping("{username}/{password}")
 	public ResponseEntity<User> findByUsernameAndPassword(@PathVariable String username, @PathVariable String password) {
 		var user = userRepo.findByUsernameAndPassword(username, password);
 		if(user.isEmpty()) {
